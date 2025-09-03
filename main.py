@@ -25,6 +25,15 @@ class Library:
         print("\n--- Kütüphanedeki Kitaplar ---")
         for book in self.books:
             book.info()
+    def find_book_by_isbn(self,isbn):
+        for book in self.books:
+            if book.isbn==isbn:
+                print("\n--- book was found ---")
+                book.info()
+                return
+        print(f"\n'{isbn}' not in library")
+        return
+
 
 my_library = Library()
 book1 = Book("Sefiller", "Victor Hugo", "978-605-332-401-8")
@@ -36,3 +45,5 @@ my_library.add_book(book1)
 my_library.add_book(book2)
 my_library.add_book(book3)
 my_library.list_books()
+my_library.find_book_by_isbn("978-605-332-237-3") # Var olan bir kitap
+my_library.find_book_by_isbn("123-456-789-0") 
