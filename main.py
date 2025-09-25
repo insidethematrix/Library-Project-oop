@@ -25,8 +25,14 @@ class Library:
     def __init__(self):
         """ Stores the books in library."""
         self.books=[] 
+
     def add_book(self,book):
         """ Adds the book object to the library. """
+        for i in self.books:
+            if i.isbn == book.isbn:
+                print(f"Book with ISBN {book.isbn} already exists in the library.")
+                return
+            
         self.books.append(book)
         print(f"'{book.title}' was added to the library.")
 
@@ -50,6 +56,16 @@ class Library:
                 return
         print(f"\n'{isbn}' not found in the library.")
         return
+    
+    def remove_book(self, isbn):
+        """ remove the books according to isbn """
+        for book in self.books:
+            if book.isbn == isbn:
+                self.books.remove(book)
+                print(f"Book '{book.title}' removed from the library")
+                return
+        print(f"No book with ISBN {isbn} found")
+
 
 if __name__=="__main__":
     # Create an instance of our library
@@ -68,3 +84,6 @@ if __name__=="__main__":
 
     my_library.find_book_by_isbn("978-605-332-237-3") # This one exists.
     my_library.find_book_by_isbn("123-456-789-0") # This one does not.
+
+    my_library.remove_book("978-605-332-237-3")
+    my_library.list_books()
