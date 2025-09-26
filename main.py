@@ -51,20 +51,17 @@ class Library:
         """ Finds the book according to isbn. """
         for book in self.books:
             if book.isbn==isbn:
-                print("\n--- book was found ---")
-                book.info()
-                return
-        print(f"\n'{isbn}' not found in the library.")
-        return
+                return book
+        return None
     
     def remove_book(self, isbn):
         """ remove the books according to isbn """
-        for book in self.books:
-            if book.isbn == isbn:
-                self.books.remove(book)
-                print(f"Book '{book.title}' removed from the library")
-                return
-        print(f"No book with ISBN {isbn} found")
+        book_object=self.find_book_by_isbn(isbn)
+        if book_object:
+                self.books.remove(book_object)
+                print(f"Book '{book_object.title}' removed from the library.")
+        else:
+            print(f"No book with ISBN {isbn} found")
 
 
 if __name__=="__main__":
@@ -82,8 +79,24 @@ if __name__=="__main__":
     my_library.add_book(book3)
     my_library.list_books()
 
-    my_library.find_book_by_isbn("978-605-332-237-3") # This one exists.
-    my_library.find_book_by_isbn("123-456-789-0") # This one does not.
 
-    my_library.remove_book("978-605-332-237-3")
-    my_library.list_books()
+existing_book = my_library.find_book_by_isbn("978-605-332-237-3")
+
+
+if existing_book:
+    print("--- Book was found! ---")
+    existing_book.info() 
+else:
+    print("--- Book not found. ---")
+
+
+
+nonexistent_book = my_library.find_book_by_isbn("123-456-789-0")
+if nonexistent_book:
+    print("--- Book was found! ---")
+    nonexistent_book.info()
+else:
+    print("--- Book not found. ---")
+    
+my_library.remove_book("978-605-332-237-3")
+my_library.list_books()
