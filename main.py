@@ -17,86 +17,95 @@ class Book:
 
     def info(self):
         """ Prints the details of the book to the terminal. """
-        print(f"title: {self.title} author: {self.author} isbn: {self.isbn}")
+        return f"title: {self.title} author: {self.author} isbn: {self.isbn}"
 
 
 class Library:
     """ Manages a collection of Book objects."""
     def __init__(self):
         """ Stores the books in library."""
-        self.books=[] 
+        self.books={}
 
     def add_book(self,book):
         """ Adds the book object to the library. """
-        for i in self.books:
-            if i.isbn == book.isbn:
-                print(f"Book with ISBN {book.isbn} already exists in the library.")
-                return
+        if book.isbn in self.books:
+                return False
             
-        self.books.append(book)
-        print(f"'{book.title}' was added to the library.")
+        self.books[book.isbn] = book
+        return True
 
     
     def list_books(self):
         """ Lists the information for all books. """
-        if not self.books:
-            print("There are no books in the library yet.")
-            return
-        
-        print("\n--- Books in the library ---")
-        for book in self.books:
-            book.info()
+        return list(self.books.values())
     
     def find_book_by_isbn(self,isbn):
         """ Finds the book according to isbn. """
-        for book in self.books:
-            if book.isbn==isbn:
-                return book
-        return None
+        return self.books.get(isbn)
     
     def remove_book(self, isbn):
         """ remove the books according to isbn """
-        book_object=self.find_book_by_isbn(isbn)
-        if book_object:
-                self.books.remove(book_object)
-                print(f"Book '{book_object.title}' removed from the library.")
-        else:
-            print(f"No book with ISBN {isbn} found")
+        if isbn in self.books:
+                book_to_remove = self.books[isbn]
+                del self.books[isbn]
+                return book_to_remove
+        return None
+        
 
 
 if __name__=="__main__":
-    # Create an instance of our library
     my_library = Library()
-
     book1 = Book("Sefiller", "Victor Hugo", "978-605-332-401-8")
     book2 = Book("Suç ve Ceza", "Fyodor Dostoyevski", "978-605-332-237-3")
     book3 = Book("Fahrenheit 451", "Ray Bradbury", "978-605-375-316-0")
 
-    # Add books and list them.
-    my_library.list_books()
-    my_library.add_book(book1)
-    my_library.add_book(book2)
-    my_library.add_book(book3)
-    my_library.list_books()
+    # Add the books and check the results
+    print("--- Adding books ---")
+    for book in [book1, book2, book3]:
+        if my_library.add_book(book):
+            print(f"'{book.title}' was added successfully.")
+        else:
+            print(f"'{book.title}' could not be added (duplicate ISBN).")
 
+    print("\n--- Listing all books ---")
+    all_books = my_library.list_books()
+    if not all_books:
+        print("The library is empty.")
+    else:
+        for book in all_books:
+            print(book.info())
 
-existing_book = my_library.find_book_by_isbn("978-605-332-237-3")
-
-
-if existing_book:
-    print("--- Book was found! ---")
-    existing_book.info() 
-else:
-    print("--- Book not found. ---")
-
-
-
-nonexistent_book = my_library.find_book_by_isbn("123-456-789-0")
-if nonexistent_book:
-    print("--- Book was found! ---")
-    nonexistent_book.info()
-else:
-    print("--- Book not found. ---")
+    # finding book (exist)
+    print("\n--- Finding an existing book ---")
+    existing_book = my_library.find_book_by_isbn("978-605-332-237-3")
+    if existing_book:
+        print("Book found:")
+        print(existing_book.info()) # .info() will return a text, print it out
+    else:
+        print("Book not found.")
+        
     
-my_library.remove_book("978-605-332-237-3")
-my_library.list_books()
+    print("\n--- Finding a non-existing book ---")
+    nonexisting_book = my_library.find_book_by_isbn("111-111-111-111-1")
+    if nonexisting_book:
+        print("Book found:")
+        print(nonexisting_book.info()) 
+    else:
+        print("Book not found.")
+
+    # Deleting book
+    print("\n--- Removing a book ---")
+    removed_book = my_library.remove_book("978-605-332-401-8") # Delete the Sefiller
+    if removed_book:
+        print(f"Successfully removed '{removed_book.title}'.")
+    else:
+        print("Book to remove was not found.")
+
+    # List the latest status again
+    print("\n--- Listing books after removal ---")
+    all_books = my_library.list_books()
+    if not all_books:
+        print("The library is empty.")
+    else:
+        for book in all_books:
+            print(book.info())
